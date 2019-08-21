@@ -58,7 +58,7 @@ createApp.post("*", async (request: Request, response: Response) => {
         })
 
         // sign the request
-        token.signature = Message.signWIF(token.encode('hex'), config().metaverse.wif, config().metaverse.avatar).toString('hex')
+        token.sourceSignature = Message.signWIF(token.encode('hex'), config().metaverse.wif, config().metaverse.avatar).toString('hex')
 
         await requestRecord.create({
             token: JSON.parse(JSON.stringify(token)),
