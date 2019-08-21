@@ -1,0 +1,9 @@
+<p>To create a new authentication request please enter the name of your symbol.</p>
+<form [formGroup]="loginForm">
+  <mat-form-field>
+    <input matInput placeholder="Avatar name" formControlName="avatar" (keydown)="errorMessage=null">
+  </mat-form-field>
+  <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+  <button type="submit" [disabled]="!loginForm.valid" mat-raised-button color="primary" (click)="submit()">Request Authorization</button>
+  <p *ngIf="errorMessage" class="error-message">{{errorMessage}}</p>
+</form>
