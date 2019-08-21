@@ -16,3 +16,15 @@ Try our solution by entering your Metaverse Avatar name and create an authentica
 Bitident authentication relies on digital signatures of Metaverse Avatars private keys. Because the address of each Avatar is publicly available on the Blockchain everybody can independently verify the signatures.
 
 We will soon publish our development kit that will enable everybody to easily integrate Metaverse backed authentication into every web-based application. You can already find our [Bitident JavaScript](https://www.npmjs.com/package/bitident) library on npm.
+
+## Setup
+This is a both documentation as well as a demo for the bitident authentication. 
+
+You can easily deploy it to your Firebase account by creating a project and then do the following steps:
+
+``` bash
+firebase functions:config:set metaverse.avatar=YOUR_AVATAR_NAME
+firebase functions:config:set metaverse.wif=YOUR_AVATAR_PRIVATE_KEY
+
+firebase deploy --project YOUR_FIREBASE_PROJECT_NAME
+```
