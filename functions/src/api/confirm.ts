@@ -16,26 +16,32 @@ confirmApp.post("**/:id", async (request: Request, response: Response) => {
     const id = request.params.id
     const signature = request.body.signature
     try {
-        ok(id, 'ID_MISSING')
+        ok(id, 'ERR_ID_MISSING')
+        ok(signature, 'ERR_SIGNATURE_MISSING')
+        ok(typeof signature === 'string', 'ERR_SIGNATURE_FORMAT')
 
+        // Get the request from the database - dont take it from the user
         const requestRecord = await requestRef.doc(id).get()
-
         const requestData = requestRecord.data()
         if (requestRecord === undefined) {
             throw Error('ERR_REQUEST_NOT_FOUND')
         } else if (requestData) {
+            // check if the status of the request is valid
             switch (requestData.status) {
                 case 'complete':
                 case 'expired':
+                    console.info(`token not active. status: ${requestData.status}`)
                     return response.json({
-                        status: requestData.status()
+                        status: requestData.status
                     })
             }
         }
+        // verify the encoded token
         const tokenString = requestData ? requestData.encoded : ''
-
         await verifyToken(tokenString, signature)
+        console.info('signature verified')
 
+        // update the status on the database
         await requestRef.doc(id).update({
             tsig: signature,
             status: 'complete',
@@ -55,7 +61,11 @@ confirmApp.post("**/:id", async (request: Request, response: Response) => {
                 })
             case 'ERR_REQUEST_NOT_FOUND':
             case 'ERR_FUTURE_TIME':
+            case 'ERR_ID_MISSING':
+            case 'ERR_SIGNATURE_MISSING':
             case 'ERR_INVALID_SIGNATURE':
+            case 'ERR_SIGNATURE_FORMAT':
+                console.warn(error)
                 return response.send(error.message)
         }
         console.error(error)
@@ -63,7 +73,7 @@ confirmApp.post("**/:id", async (request: Request, response: Response) => {
     }
 })
 
-async function verifyToken(token: string, targetSignature: string) {
+async function verifyToken(token: string, targetSignature: Buffer) {
     console.info('check signature', targetSignature, ' for token', token)
     const tokenData = Request.decode(token, 'hex')
 
@@ -73,8 +83,11 @@ async function verifyToken(token: string, targetSignature: string) {
     if ((tokenData.time + tokenData.timeout) * 1000 < Date.now()) {
         throw Error('ERR_EXPIRED')
     }
+    console.info(`token time still valid ${tokenData.time} with timeout of ${tokenData.timeout}s`)
 
-    const address = await requestify.get('https://explorer.mvs.org/api/avatar/' + tokenData['target'])
+    const avatar = tokenData['target']
+
+    const address = await requestify.get('https://explorer.mvs.org/api/avatar/' + avatar)
         .then((result: any) => {
             const res = result.getBody()
             if (res.result) {
@@ -90,6 +103,7 @@ async function verifyToken(token: string, targetSignature: string) {
             console.log('cannot load avatar', error)
             throw Error('ERR_VALIDATE_TARGET_AVATAR')
         })
+    console.log(`avatar ${avatar} has address ${address}`)
 
     if (!Message.verify(token, address, targetSignature, tokenData.target)) {
         throw Error('ERR_INVALID_SIGNATURE')

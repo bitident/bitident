@@ -43,7 +43,9 @@ createApp.post("*", async (request: Request, response: Response) => {
                 console.log('cannot load avatar', error)
                 throw Error('ERR_VALIDATE_AVATAR')
             })
+        console.info(`avatar ${avatar} does exist`)
 
+        // create database record to get the id for the callback url
         const requestRecord = await requestRef.doc()
 
         const token = new Request({
@@ -56,13 +58,19 @@ createApp.post("*", async (request: Request, response: Response) => {
             network: 'mainnet',
             version: 1
         })
+        const unsignedEncodedToken=token.encode('hex')
 
         // sign the request
-        token.sourceSignature = Message.signWIF(token.encode('hex'), config().metaverse.wif, config().metaverse.avatar).toString('hex')
+        token.sourceSignature = Message.signWIF(unsignedEncodedToken, config().metaverse.wif, config().metaverse.avatar).toString('hex')
+        console.log(`created signature ${token.sourceSignature} for unsigned token ${unsignedEncodedToken}`)
+
+        // create the encoded signed token
+        const signedEncodedToken=token.encode('hex')
+        console.log(`created signed encoded token ${signedEncodedToken}`)
 
         await requestRecord.create({
             token: JSON.parse(JSON.stringify(token)),
-            encoded: token.encode('hex')
+            encoded: signedEncodedToken
         })
             .catch(error => {
                 console.error(error)
@@ -70,7 +78,7 @@ createApp.post("*", async (request: Request, response: Response) => {
             })
 
         return response.json({
-            token: token.encode('hex'),
+            token: signedEncodedToken,
             id: requestRecord.id,
         })
 
@@ -80,6 +88,7 @@ createApp.post("*", async (request: Request, response: Response) => {
             case 'ERR_VALIDATE_AVATAR':
             case 'ERR_AVATAR_NOT_FOUND':
             case 'ERR_CREATE_REQUEST':
+                console.warn(error)
                 return response.send(error.message)
         }
         console.error(error)
