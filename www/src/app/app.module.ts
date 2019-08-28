@@ -7,6 +7,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
 import { InfoComponent } from './info/info.component';
 import { FooterComponent } from './footer/footer.component';
+import { NgxGoogleAnalyticsModule, NgxGoogleAnalyticsRouterModule, } from 'ngx-google-analytics';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,8 @@ import { FooterComponent } from './footer/footer.component';
     HttpClientModule,
     AppRoutingModule,
     FlexLayoutModule,
+    NgxGoogleAnalyticsModule.forRoot('UA-145642450-1'),
+    NgxGoogleAnalyticsRouterModule,
     BrowserAnimationsModule
   ],
   providers: [],
