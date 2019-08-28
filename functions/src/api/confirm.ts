@@ -65,7 +65,7 @@ confirmApp.post("**/:id", async (request: Request, response: Response) => {
             case 'ERR_SIGNATURE_MISSING':
             case 'ERR_INVALID_SIGNATURE':
             case 'ERR_SIGNATURE_FORMAT':
-                console.warn(error)
+                console.log(error)
                 return response.send(error.message)
         }
         console.error(error)

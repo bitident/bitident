@@ -88,7 +88,7 @@ createApp.post("*", async (request: Request, response: Response) => {
             case 'ERR_VALIDATE_AVATAR':
             case 'ERR_AVATAR_NOT_FOUND':
             case 'ERR_CREATE_REQUEST':
-                console.warn(error)
+                console.log(error)
                 return response.send(error.message)
         }
         console.error(error)
