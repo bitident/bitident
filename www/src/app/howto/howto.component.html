@@ -1,0 +1,100 @@
+<script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "HowTo",
+      "name": "How to authenticate with a Metaverse Avatar using bitident",
+      "description": "Use your Metaverse digital identity for the decentralized authentication mechanism of bitident. The following steps will guide you through your first Blockchain powered authentication.",
+      "supply": [
+    {
+      "@type": "HowToSupply",
+      "name": "Metaverse Avatar"
+    }
+  ],
+  "tool": [
+  {
+    "@type": "HowToTool",
+    "name": "Bitident compatible wallet"
+  }
+],
+      "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Request Authentication",
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://bitident.com/assets/img/icon.png"
+      },
+      "itemListElement": [{
+        "@type": "HowToDirection",
+        "text": "Open the website or application you want to authenticate to."
+      }, {
+        "@type": "HowToDirection",
+        "text": "You should be presented with a QR-Code or a text that contains the request parameters."
+      }]
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Verify and sign the request",
+      "itemListElement": [{
+        "@type": "HowToDirection",
+        "text": "Open your bitident compatible wallet and use the Authentication tool to scan the request."
+      }, {
+        "@type": "HowToDirection",
+        "text": "You should now see the request parameters. Carefully check the request origin and URL."
+      }, {
+        "@type": "HowToDirection",
+        "text": "Sign and send the request. Your wallet will automatically send it to the origin URL."
+      }]
+    }, 
+    {
+      "@type": "HowToStep",
+      "name": "Check your authentication status",
+      "itemListElement": [{
+        "@type": "HowToDirection",
+        "text": "The request origin should be able to verify your signed request and accept your authentication"
+      }]
+    }
+    ]
+    }
+    </script>
+<h2>How to authenticate with a Metaverse Avatar using bitident</h2>
+<p>Use your Metaverse digital identity for the decentralized authentication mechanism of bitident. The following steps
+    will guide you through your first Blockchain powered authentication.</p>
+
+<ol>
+    <li>
+        <h5>
+            Open the website or application you want to authenticate to
+        </h5>
+        <p>
+            You should be presented with a QR-Code or a text that contains the request parameters
+        </p>
+    </li>
+    <li>
+        <h5>
+            Open your bitident compatible wallet and use the Authentication tool to scan the request.
+        </h5>
+        <p>
+            You should now see the request parameters. Carefully check the request origin and URL
+        </p>
+    </li>
+    <li>
+        <h5>
+            Sign and send the request
+        </h5>
+        <p>
+            Your wallet will automatically send it to the origin URL.
+        </p>
+    </li>
+    <li>
+        <h5>
+            Check your authentication status
+        </h5>
+        <p>
+            The request origin should be able to verify your signed request and accept your authentication
+        </p>
+    </li>
+</ol>
+  <a [routerLink]="['/']">
+    <button mat-raised-button color="secondary">Try it</button>
+  </a>
