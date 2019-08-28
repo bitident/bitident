@@ -10,8 +10,16 @@
         height: 32px;
         width: auto;
         margin-right: 5px;
+        vertical-align: middle;
     }
     .icon.linkedin{
         filter: invert(0.75);
+    }
+    .icon.mail{
+        filter: invert(0.4);
+    }
+    .icon.mail{
+        height: 36px;
+        filter: contrast(0.9);
     }
 }
