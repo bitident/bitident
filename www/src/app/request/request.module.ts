@@ -6,6 +6,7 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { MaterialModule } from '../material/material.module';
 import { CountdownModule } from 'ngx-countdown';
 import { ClipboardModule } from 'ngx-clipboard';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [RequestComponent],
@@ -16,6 +17,7 @@ import { ClipboardModule } from 'ngx-clipboard';
     CountdownModule,
     QRCodeModule,
     MaterialModule,
+    FlexLayoutModule,
   ]
 })
 export class RequestModule { }

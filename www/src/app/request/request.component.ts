@@ -7,7 +7,7 @@ import { Request } from 'bitident';
 @Component({
   selector: 'app-request',
   templateUrl: './request.component.html',
-  styleUrls: ['./request.component.sass']
+  styleUrls: ['./request.component.scss']
 })
 export class RequestComponent implements OnInit {
 

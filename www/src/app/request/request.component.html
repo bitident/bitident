@@ -1,7 +1,11 @@
 <div *ngIf="!completed; else finished" style="padding-top: 20px; padding-bottom: 10px;">
   <p>Please open your MyETPWallet and use the 2FA option from the menu to scan the generated QR code or enter the
     generated request token.</p>
-  <qrcode [qrdata]="token" usesvg="true" [level]="'M'" size="256"></qrcode>
+  <div fxLayout="row wrap" fxLayoutAlign="space-around">
+    <div fxFlex.gt-sm="50" fxFlex.sx="100" fxFlex.sm="75" fxFlex.md="100" fxFlex.lg="75" fxFlex.xl="50%">
+      <qrcode [qrdata]="token" usesvg="true" [level]="'M'" size="256"></qrcode>
+    </div>
+  </div>
   <button mat-stroked-button color="secondary" ngxClipboard [cbContent]="token">Copy request to clipboad</button>
 
   <div style="text-align: center; padding-top: 20px;">waiting for confirmation</div>
