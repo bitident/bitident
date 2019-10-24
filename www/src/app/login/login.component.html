@@ -1,13 +1,18 @@
-<p>To create a new authentication request please enter the name of your symbol.</p>
+<p class="border-box">If you use the Metaverse Lightwallet the minimum required version is 0.8.2.</p>
+<p>To create a new authentication request for a predefined avatar please enter the name of your symbol.</p>
 <form [formGroup]="loginForm">
   <mat-form-field>
     <input matInput placeholder="Avatar name" formControlName="avatar" (keydown)="errorMessage=null">
   </mat-form-field>
   <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
-  <button type="submit" [disabled]="!loginForm.valid" mat-raised-button color="primary" (click)="submit()">Request
-    Authorization</button>
+  <button type="submit" [disabled]="!loginForm.valid" mat-raised-button color="primary"
+    (click)="request(loginForm.value.avatar)">Request
+    Authentication for Avatar {{loginForm.value.avatar}}</button>
   <p *ngIf="errorMessage" class="error-message">{{errorMessage}}</p>
   <a [routerLink]="['howto']">
     <button mat-raised-button color="secondary">How does it work?</button>
   </a>
 </form>
+<br><br><br>
+<p>Alternatively you can also generate a blank request token to allow the user to select an avatar on the client side.</p>
+<button mat-raised-button color="primary" (click)="request()">Create Blank Token</button>

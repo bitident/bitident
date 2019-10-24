@@ -15,8 +15,9 @@ export class RequestComponent implements OnInit {
   id: string;
   completed = false;
   timedout = false;
+  avatar: string;
 
-  tokenData: any
+  tokenData: any;
 
   checkInterval: any;
 
@@ -42,6 +43,9 @@ export class RequestComponent implements OnInit {
         .subscribe(result => {
           if (!this.completed) {
             if (result.success) {
+              if (result.avatar) {
+                this.avatar = result.avatar;
+              }
               this.completed = true;
               clearInterval(this.checkInterval);
               this.checkInterval = null;
@@ -58,6 +62,7 @@ export class RequestComponent implements OnInit {
   timeout() {
     this.timedout = true;
     this.completed = true;
+    this.avatar = undefined;
     if (this.checkInterval) {
       clearInterval(this.checkInterval);
       this.checkInterval = null;
@@ -71,6 +76,7 @@ export class RequestComponent implements OnInit {
     }
     this.router.navigate([''], { relativeTo: this.activatedRoute.parent });
     this.completed = false;
+    this.avatar = undefined;
   }
 
 }

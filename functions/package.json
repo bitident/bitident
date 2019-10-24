@@ -10,11 +10,11 @@
     "logs": "firebase functions:log"
   },
   "engines": {
-    "node": "8"
+    "node": "10"
   },
   "main": "lib/index.js",
   "dependencies": {
-    "bitident": "^0.1.4",
+    "bitident": "^0.1.11",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "firebase-admin": "^7.0.0",

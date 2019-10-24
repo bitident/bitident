@@ -8,5 +8,6 @@ export interface Token {
     target: string
     network: string
     message?: string
-    signature?: string
+    sourceSignature?: string
+    targetSignature?: string
 }

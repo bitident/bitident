@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  bitidentUrl: 'https://bitident.com/api/',
+  bitidentUrl: 'http://localhost:5001/bitident-demo/us-central1/',
   checkInterval: 4999,
 };
 

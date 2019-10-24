@@ -6,6 +6,7 @@ const cors = require('cors')
 confirmApp.use(cors())
 import { firestore, } from 'firebase-admin'
 import { ok } from 'assert'
+import { Token } from '../interface/token';
 const { Request, Message } = require('bitident')
 
 const db = firestore();
@@ -14,11 +15,20 @@ const requestRef = db.collection('request');
 
 confirmApp.post("**/:id", async (request: Request, response: Response) => {
     const id = request.params.id
-    const signature = request.body.signature
+    const receivedTokenString = request.body.token
+
     try {
+
+        ok(typeof receivedTokenString === 'string', 'ERR_SIGNATURE_FORMAT')
+
+        let receivedToken: Token;
+        try {
+            receivedToken = Request.decode(receivedTokenString, 'hex')
+        } catch (error){
+            throw Error('ERR_DECODINNG_TOKEN');
+        }
         ok(id, 'ERR_ID_MISSING')
-        ok(signature, 'ERR_SIGNATURE_MISSING')
-        ok(typeof signature === 'string', 'ERR_SIGNATURE_FORMAT')
+        ok(receivedToken.targetSignature, 'ERR_SIGNATURE_MISSING')
 
         // Get the request from the database - dont take it from the user
         const requestRecord = await requestRef.doc(id).get()
@@ -38,18 +48,25 @@ confirmApp.post("**/:id", async (request: Request, response: Response) => {
         }
         // verify the encoded token
         const tokenString = requestData ? requestData.encoded : ''
-        await verifyToken(tokenString, signature)
+
+        console.info('check signature', receivedToken.targetSignature, ' for token', tokenString)
+        const originToken: Token = Request.decode(tokenString, 'hex');
+        originToken.targetSignature=receivedToken.targetSignature
+        if(originToken.target===''&&receivedToken.target!==''){
+            originToken.target=receivedToken.target;
+        }
+        await verifyTargetSignature(originToken)
         console.info('signature verified')
 
         // update the status on the database
         await requestRef.doc(id).update({
-            tsig: signature,
+            tsig: receivedToken.targetSignature,
+            avatar: receivedToken.target,
             status: 'complete',
         })
 
         return response.json({
-            ...requestData,
-            tsig: signature,
+            target: receivedToken.target
         })
 
     } catch (error) {
@@ -61,6 +78,7 @@ confirmApp.post("**/:id", async (request: Request, response: Response) => {
                 })
             case 'ERR_REQUEST_NOT_FOUND':
             case 'ERR_FUTURE_TIME':
+            case 'ERR_DECODING_TOKEN':
             case 'ERR_ID_MISSING':
             case 'ERR_SIGNATURE_MISSING':
             case 'ERR_INVALID_SIGNATURE':
@@ -73,19 +91,19 @@ confirmApp.post("**/:id", async (request: Request, response: Response) => {
     }
 })
 
-async function verifyToken(token: string, targetSignature: Buffer) {
-    console.info('check signature', targetSignature, ' for token', token)
-    const tokenData = Request.decode(token, 'hex')
+async function verifyTargetSignature(token: Token) {
 
-    if (tokenData.time > Date.now()) {
+
+    if (token.time > Date.now()) {
         throw Error('ERR_FUTURE_TIME')
     }
-    if ((tokenData.time + tokenData.timeout) * 1000 < Date.now()) {
+    if ((token.time + token.timeout) * 1000 < Date.now()) {
         throw Error('ERR_EXPIRED')
     }
-    console.info(`token time still valid ${tokenData.time} with timeout of ${tokenData.timeout}s`)
+    console.info(`token time still valid ${token.time} with timeout of ${token.timeout}s`)
 
-    const avatar = tokenData['target']
+    const avatar = token.target
+    ok(avatar, 'ERR_TARGET_NOT_SET');
 
     const address = await requestify.get('https://explorer.mvs.org/api/avatar/' + avatar)
         .then((result: any) => {
@@ -105,7 +123,13 @@ async function verifyToken(token: string, targetSignature: Buffer) {
         })
     console.log(`avatar ${avatar} has address ${address}`)
 
-    if (!Message.verify(token, address, targetSignature, tokenData.target)) {
+    const targetSignature = token.targetSignature
+    token.sourceSignature=''
+    token.targetSignature=''
+
+    const checkToken = new Request(token)
+
+    if (!Message.verify(checkToken.encode('hex'), address, targetSignature, avatar)) {
         throw Error('ERR_INVALID_SIGNATURE')
     }
     return true

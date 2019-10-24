@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 
 export interface CheckRequestResponse {
   success: boolean;
+  avatar?: string;
 }
 
 export interface CreateRequestResponse {

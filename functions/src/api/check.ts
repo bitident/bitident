@@ -26,7 +26,7 @@ checkApp.get("**/:id", async (request: Request, response: Response) => {
 
         if(requestData && requestData.tsig){
             console.log('request complete')
-            return response.json({success: 1})
+            return response.json({success: 1, avatar: requestData.avatar})
         } else {
             console.log('request incomplete')
             return response.json({success: 0})

@@ -2,12 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { BitidentService } from '../services/bitident.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.sass']
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
 
@@ -27,18 +26,18 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  async submit() {
+  async request(avatarSymbol?: string) {
     try {
       this.loading = true;
-      const result = await this.bitident.createRequest(this.loginForm.value.avatar).toPromise()
+      const result = await this.bitident.createRequest(avatarSymbol).toPromise();
       this.loading = false;
       this.errorMessage = undefined;
       await this.router.navigate(['request'], { state: result, relativeTo: this.activatedRoute });
     } catch (error) {
       if (error.error === 'ERR_VALIDATE_AVATAR') {
-        this.errorMessage = 'Avatar does not exist'
+        this.errorMessage = 'Avatar does not exist';
       } else {
-        this.errorMessage = 'Oops... An unknown error occured. Please try later'
+        this.errorMessage = 'Oops... An unknown error occured. Please try later';
         console.error(error);
       }
       this.loading = false;

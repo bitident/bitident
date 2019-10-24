@@ -23,6 +23,9 @@
   </div>
   <ng-template #success>
     <img src="/assets/img/check.svg" width="50%" alt="Success">
+    <div *ngIf="avatar">
+      Successfully authenticated as Avatar {{avatar}}
+    </div>
   </ng-template>
 </ng-template>
 <button mat-raised-button color="primary" (click)="cancel()">{{completed?'Back':'Cancel'}}</button>
